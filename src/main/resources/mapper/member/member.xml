@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.sseuim.member.mapper.MemberMapper" >
+    
+    <insert id="saveMember" parameterType="MemberVo">
+        INSERT INTO
+        MEMBER (
+            ID,
+            PWD,
+            NAME,
+            NICKNAME,
+            BIRTH,
+            EMAIL,
+            REG_DATE,
+            USE_YN
+        )
+        VALUES (
+            #{id},
+            #{pwd},
+            #{name},
+            #{nickname},
+            #{birth},
+            #{email},
+            now(),
+            'Y'
+        )
+    </insert>
+
+    <select id="getIsDuple" parameterType="String" resultType="int">
+
+        SELECT COUNT(*)
+        FROM MEMBER
+        WHERE
+            ID = #{id}
+    </select>
+
+</mapper>

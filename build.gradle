@@ -19,6 +19,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// lombok plugin
+	implementation 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// mybatis
+	implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '3.0.2'
+	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.31'
+
+	// log4
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 }
 
 tasks.named('test') {

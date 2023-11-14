@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/*국민연금체*/
+@font-face {
+  font-family: 'NPSfontBold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2310@1.0/NPSfontBold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/*오뮤 다예쁨체*/
+@font-face {
+  font-family: 'omyu_pretty';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
