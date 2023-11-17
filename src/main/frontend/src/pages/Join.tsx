@@ -1,12 +1,12 @@
 
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import {useForm, SubmitHandler, FieldErrors} from "react-hook-form";
+import {useForm, SubmitHandler} from "react-hook-form";
 import {Member} from '../types/basic';
 import { useSelector, useDispatch } from 'react-redux';
 import {init, join} from "../stores/member/memberSlice";
 import {AppDispatch, RootState} from "../stores/store";
-import React, {useEffect, useState} from "react";
+import React, {InputHTMLAttributes, useEffect, useState} from "react";
 import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 import {isDisabled} from "@testing-library/user-event/dist/utils";
 
@@ -27,9 +27,11 @@ function Join () :JSX.Element {
         dispatch( init() );
     },[isSuccess])
 
+
     const {
         register,
         handleSubmit  ,
+        watch,
         formState : {errors, isSubmitting},  // isSubmitting 중복제출 방지
     } = useForm<Member>({mode:'onChange'})
 
@@ -51,8 +53,11 @@ function Join () :JSX.Element {
 
     const onClick = async () => {
 
-        console.log("아이디 " + id);
-        if(id === " "){return}
+        setIsDuple(false);
+        id = watch("id");
+
+        if(id === ""){return}
+
         try {
              await axios.get(
                     '/idCheck',
@@ -61,7 +66,6 @@ function Join () :JSX.Element {
                     }
                 )
                  .then((res)=>{
-                     console.log("응답 ..." + res.data)
                      if( res.data != 0 ){
                          setIsDuple(true);
                          alert("아이디가 존재합니다.");
@@ -79,7 +83,7 @@ function Join () :JSX.Element {
 
     return (
         <Container>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onKeyDown={(event)=>{return event.key != 'Enter'}} onSubmit={handleSubmit(onSubmit)}>
                 <Label>
                     <label htmlFor='id'>아이디</label>
                     {errors.id && <span >{errors.id.message}</span>}
@@ -88,7 +92,6 @@ function Join () :JSX.Element {
                     <input
                         type='text'
                         maxLength={20}
-                        onClick={(e )=>{  const target = e.target as HTMLInputElement; console.log(target.value); setId(target.value)}}
                         {...register('id',{
                                 required : '아이디를 입력해주세요',
                                 minLength : {
@@ -103,8 +106,10 @@ function Join () :JSX.Element {
                         }
                     />
                     <CheckButton
+                        type='button'
                         color = ''
                         onClick={onClick}
+                        onKeyDown={(e:React.KeyboardEvent)=>{ if(e.key === 'Enter') return; }}
                         disabled ={disabled}
                     >중복체크
                     </CheckButton>
@@ -118,6 +123,7 @@ function Join () :JSX.Element {
                     <input
                         type='password'
                         maxLength={20}
+
                         {...register('pwd', {
                             required: '비밀번호를 입력해주세요.',
                             minLength: {
@@ -136,6 +142,7 @@ function Join () :JSX.Element {
                     <input
                         type='password'
                         maxLength={20}
+
                         {...register("rePwd", {
                             validate: (value, formValues) => {
                                 return value === formValues.pwd || "비밀번호가 일치하지 않습니다."
@@ -152,6 +159,7 @@ function Join () :JSX.Element {
                     <input
                         type='text'
                         maxLength={20}
+
                         {...register('name', {
                             required: '이름을 입력해주세요.',
                             minLength: {
@@ -170,6 +178,7 @@ function Join () :JSX.Element {
                     <input
                         type='text'
                         maxLength={20}
+
                         {...register('nickname')}
                     />
                 </FormWrapper>
@@ -183,6 +192,7 @@ function Join () :JSX.Element {
                         type='text'
                         placeholder='19990101'
                         maxLength={8}
+
                         {...register('birth', {
                             minLength: {
                                 value: 8,
@@ -204,6 +214,7 @@ function Join () :JSX.Element {
                     <input
                         type='email'
                         placeholder='user@email.com'
+
                         {...register('email', {
                             required: '이메일을 입력해주세요.',
                             pattern: {

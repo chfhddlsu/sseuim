@@ -17,6 +17,8 @@ public class MemberServiceImpl implements MemberService{
         this.mapper= mapper;
     }
 
+
+    @Transactional
     @Override
     public int saveMember(MemberVo vo){
         int result = 0;
@@ -30,9 +32,11 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public int getIsDuple(String id){
+    public int getIdDuple(String id){
 
 
-        return mapper.getIsDuple(id);
+        return mapper.getIdDuple(id);
     }
+
+
 }

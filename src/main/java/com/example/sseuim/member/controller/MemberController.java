@@ -1,11 +1,13 @@
 package com.example.sseuim.member.controller;
 
+import com.example.sseuim.member.domain.JoinVo;
 import com.example.sseuim.member.domain.MemberVo;
 import com.example.sseuim.member.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,9 +34,9 @@ public class MemberController {
         try{
 
             if(!id.isEmpty()){
-                result = service.getIsDuple(id);
+                result = service.getIdDuple(id);
             }else{
-                throw  new NullPointerException();
+                throw  new NullPointerException("아이디를 입력해주세요");
             }
 
         }catch (Exception e){

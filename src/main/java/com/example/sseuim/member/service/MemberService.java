@@ -6,5 +6,5 @@ public interface MemberService {
 
     int saveMember(MemberVo vo);
 
-    int getIsDuple(String id);
+    int getIdDuple(String id);
 }
