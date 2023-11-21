@@ -1,8 +1,10 @@
 package com.example.sseuim.member.service;
 
 
-import com.example.sseuim.member.domain.MemberVo;
+import com.example.sseuim.jwt.config.SecurityUtil;
+import com.example.sseuim.member.domain.MemberResponseVo;
 import com.example.sseuim.member.mapper.MemberMapper;
+import com.example.sseuim.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,23 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberMapper mapper;
+    private final MemberRepository memberRepository;
+
     @Autowired
-    public MemberServiceImpl(MemberMapper mapper){
+    public MemberServiceImpl(MemberMapper mapper,MemberRepository memberRepository){
         this.mapper= mapper;
+        this.memberRepository = memberRepository;
     }
 
 
-    @Transactional
     @Override
-    public int saveMember(MemberVo vo){
-        int result = 0;
-
-        if(vo.getNickname() == ""){
-            vo.setNickname(vo.getId());
-        }
-        result = mapper.saveMember(vo);
-
-        return result;
+    public MemberResponseVo getMyInfoBySecurity() {
+        return memberRepository.findById(SecurityUtil.getCurrentMemberId())
+                .map(MemberResponseVo::of)
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
     }
 
     @Override
@@ -37,6 +36,7 @@ public class MemberServiceImpl implements MemberService{
 
         return mapper.getIdDuple(id);
     }
+
 
 
 }

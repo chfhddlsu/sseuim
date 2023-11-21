@@ -1,6 +1,8 @@
 package com.example.sseuim.member.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,53 +11,57 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-@Data
+@Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member implements UserDetails {
+@Entity
+@NoArgsConstructor
+public class Member {
 
-        private String id;
-        private String password;
-        private String username;
-        private String nickname;
-        private String birth;
+        @jakarta.persistence.Id
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private long id;
+
+        @Column(nullable = false)
         private String email;
-        private String gender;
-        private String reg_date;
-        private String use_yn;
 
-        @Builder.Default
-        private List<String> roles = new ArrayList<>();
+        @Column(nullable = false)
+        private String password;
 
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities(){
-            return this.roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+        @Column(nullable = false)
+        private String nickname;
+
+        @Column(nullable = false)
+        private String birth;
+
+        @Enumerated(EnumType.STRING)
+        private Authority authority;
+
+        public void setNickname(String nickname) {
+                this.nickname = nickname;
         }
 
 
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
+        public void setPassword(String password) { this.password = password; }
+
+        @Builder
+        public Member(Long id, String email, String password, String nickname ,String birth, Authority authority) {
+                this.id = id;
+                this.email = email;
+                this.password = password;
+                this.nickname = nickname;
+                this.birth = birth;
+                this.authority = authority;
         }
 
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
+
+        public void setId(Long id) {
+                this.id = id;
         }
 
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
+        public Long getId() {
+                return id;
         }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-
-    }
+}
 
 

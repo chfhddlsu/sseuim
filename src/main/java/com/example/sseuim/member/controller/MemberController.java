@@ -1,30 +1,29 @@
 package com.example.sseuim.member.controller;
 
-import com.example.sseuim.member.domain.JoinVo;
-import com.example.sseuim.member.domain.MemberVo;
+import com.example.sseuim.member.domain.MemberResponseVo;
+import com.example.sseuim.member.service.AuthService;
+import com.example.sseuim.member.service.MemberService;
 import com.example.sseuim.member.service.MemberServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/member")
 public class MemberController {
 
     private final MemberServiceImpl service;
-    @Autowired
-    public MemberController(MemberServiceImpl service){
-        this.service = service;
-    }
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    @PostMapping("join")
-    public int saveMember(@RequestBody MemberVo vo){
+    private final AuthService authService;
+    private final MemberService memberService;
 
-        logger.info("가입정보 ============>>> {}", vo);
-
-        return service.saveMember(vo);
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    @PostMapping("/me")
+    public ResponseEntity<MemberResponseVo> getMyMemberInfo(){
+        MemberResponseVo myInfoBySecurity = memberService.getMyInfoBySecurity();
+        return ResponseEntity.ok((myInfoBySecurity));
     }
 
     @GetMapping("idCheck")
@@ -41,12 +40,14 @@ public class MemberController {
 
         }catch (Exception e){
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
-        logger.info("사용자 아이디 ====== > " + id);
+        log.info("사용자 아이디 ====== > " + id);
 
 
         return result;
     }
+
+
 
 }
