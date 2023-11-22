@@ -1,30 +1,30 @@
 import styled from 'styled-components';
-import { useState , useEffect} from 'react';
+import { useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {AppDispatch, RootState} from "../stores/store";
 import {useDispatch, useSelector} from "react-redux";
 import {init, join, login} from "../stores/member/memberSlice";
 import {useForm, SubmitHandler} from "react-hook-form";
-
 import React from 'react';
 import {Member} from "../types/basic";
 
 
 function Login (){
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
     const { isLogin, isError } = useSelector((state: RootState) => state.member);
 
     useEffect(() => {
 
         if (isLogin) {
-            //navigate('/books/library');
-            alert("로그인성공");
+            navigate('/library');
         }
-        if (isError) {
-            alert("로그인실패");
 
+        if (isError) {
+            dispatch(init());
         }
-    }, [isError, isLogin, dispatch]);
+
+    }, [isError, isLogin, dispatch, navigate]);
 
     const {
         register,

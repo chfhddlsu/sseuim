@@ -6,19 +6,13 @@ import {BsPersonGear} from 'react-icons/bs';
 import logo from '../img/Logo.png'
 import {useSelector} from "react-redux";
 import {RootState} from "../stores/store";
-const HeaderWrapper = styled.header`
-
-  height: 3.75rem;
-  padding: 0 0.6rem;
-  position: sticky;
-  top: 0;
+const HeaderWrapper = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1;
-  /* 추가 */
-  min-width: 375px;
+  padding: 8px 12px;  min-width: 375px;
 `;
+
 const Logo = styled.div`
   height: 100%;
   margin: auto;
@@ -31,12 +25,10 @@ const Logo = styled.div`
   }
 `;
 const Menu = styled.ul`
+  list-style: none;
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 15%;
-  height: 100%;
+  margin: 0;
+  padding-left: 0;
   font-family: 'NPSfontBold';
 
 `
@@ -79,15 +71,15 @@ function Header () {
             {
                 isLogin === true ?
                     <Menu>
-                        <StyledLink to='/li'>
+                        <StyledLink to='/library'>
                             <BiBookHeart size='1.7rem'/>
                             <p> 내 서재 </p>
                         </StyledLink>
-                        <StyledLink to='/li'>
+                        <StyledLink to='/search'>
                             <FiSearch size='1.5rem'/>
                             <p> 책 검색</p>
                         </StyledLink>
-                        <StyledLink to='/li'>
+                        <StyledLink to='/myPage'>
                             <BsPersonGear size='1.5rem'/>
                             <p> 내 정보</p>
                         </StyledLink>

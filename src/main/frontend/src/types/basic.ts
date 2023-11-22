@@ -9,3 +9,10 @@ export interface Member {
     birth?    : string;
 
 }
+
+export interface Books {
+    title  : string;
+    author : string;
+    isbn13 : string;
+    cover  : string;
+}
