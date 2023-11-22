@@ -4,6 +4,8 @@ import { FiSearch } from 'react-icons/fi';
 import {BiBookHeart} from 'react-icons/bi';
 import {BsPersonGear} from 'react-icons/bs';
 import logo from '../img/Logo.png'
+import {useSelector} from "react-redux";
+import {RootState} from "../stores/store";
 const HeaderWrapper = styled.header`
 
   height: 3.75rem;
@@ -62,6 +64,7 @@ const StyledLink = styled(Link)`
 
 
 function Header () {
+    const { isLogin } = useSelector((state: RootState) => state.member);
 
     return (
 
@@ -73,20 +76,25 @@ function Header () {
                </Logo>
             </Link>
 
-            <Menu>
-                <StyledLink to='/li'>
-                    <BiBookHeart size='1.7rem'/>
-                    <p> 내 서재 </p>
-                </StyledLink>
-                <StyledLink to='/li'>
-                    <FiSearch size='1.5rem'/>
-                    <p> 책 검색</p>
-                </StyledLink>
-                <StyledLink to='/li'>
-                    <BsPersonGear size='1.5rem'/>
-                    <p> 내 정보</p>
-                </StyledLink>
-            </Menu>
+            {
+                isLogin === true ?
+                    <Menu>
+                        <StyledLink to='/li'>
+                            <BiBookHeart size='1.7rem'/>
+                            <p> 내 서재 </p>
+                        </StyledLink>
+                        <StyledLink to='/li'>
+                            <FiSearch size='1.5rem'/>
+                            <p> 책 검색</p>
+                        </StyledLink>
+                        <StyledLink to='/li'>
+                            <BsPersonGear size='1.5rem'/>
+                            <p> 내 정보</p>
+                        </StyledLink>
+                    </Menu>
+                    : <Menu></Menu>
+            }
+
         </HeaderWrapper>
 
     );

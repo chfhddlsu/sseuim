@@ -18,7 +18,7 @@ function Join () :JSX.Element {
     useEffect(()=>{
 
         if(isSuccess === true){
-            //navigate('/login');
+            navigate('/login');
         }
 
         dispatch( init() );
@@ -28,7 +28,6 @@ function Join () :JSX.Element {
     const {
         register,
         handleSubmit  ,
-        watch,
         formState : {errors, isSubmitting},  // isSubmitting 중복제출 방지
     } = useForm<Member>({mode:'onChange'})
 
@@ -50,7 +49,6 @@ function Join () :JSX.Element {
                     <input
                         type='email'
                         placeholder='user@email.com'
-
                         {...register('email', {
                             required: '이메일을 입력해주세요.',
                             pattern: {
@@ -114,7 +112,6 @@ function Join () :JSX.Element {
                             },
                         })}
                     />
-
                 </FormWrapper>
 
                 <Label>
@@ -124,8 +121,13 @@ function Join () :JSX.Element {
                     <input
                         type='text'
                         maxLength={20}
-
-                        {...register('nickname')}
+                        {...register('nickname',{
+                            required : '닉네임을 입력해주세요',
+                            minLength : {
+                                value : 2,
+                                message : '2글자 이상 입력해주세요'
+                            }
+                        })}
                     />
                 </FormWrapper>
 
@@ -151,12 +153,9 @@ function Join () :JSX.Element {
                         })}
                     />
                 </FormWrapper>
-
-
                 <JoinButton type='submit' className='signInBtn' disabled={isSubmitting}>
                     회원 가입하기
                 </JoinButton>
-
                 <Link to='/login'>이미 회원이신가요?</Link>
             </form>
         </Container>

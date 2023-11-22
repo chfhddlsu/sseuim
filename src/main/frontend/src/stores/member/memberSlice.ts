@@ -54,7 +54,7 @@ export const login = createAsyncThunk<string, Member, { rejectValue: string }>(
     'member/login',
     async (userData: Member, { rejectWithValue }) => {
         //callback function
-        console.log("로긴");
+
         try {
             const response = await axios.post(
                  '/auth/login',
