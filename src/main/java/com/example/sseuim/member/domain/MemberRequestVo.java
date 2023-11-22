@@ -15,12 +15,16 @@ public class MemberRequestVo {
     private String email;
     private String password;
     private String nickname;
+    private String name;
+    private String birth;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .name(name)
                 .nickname(nickname)
+                .birth(birth)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

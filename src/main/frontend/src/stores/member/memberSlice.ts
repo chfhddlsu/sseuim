@@ -1,9 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import {Member} from "../../types/basic";
+import { toast } from 'react-toastify';
 
 export interface memberReducer {
     member    : Member;
+    token     : string
     isLogin   : boolean;
     isError   : boolean;
     isSuccess : boolean;
@@ -12,14 +14,14 @@ export interface memberReducer {
 
 const initialState: memberReducer = {
     member : {
-        id       : '',
-        pwd      : '',
+        password : '',
         rePwd    : '',
         name     : '',
         nickname : '',
         birth    : '',
         email    : '',
     },
+    token     : '',
     isLogin   : false,
     isError   : false,
     isSuccess : false,
@@ -33,12 +35,11 @@ export const join = createAsyncThunk<string, Member, { rejectValue: string }>(
 
         try {
             const { data } = await axios.post(
-                '/join',
+                'auth/join',
                 member,
             );
 
             return data;
-
         } catch (error: any) {
             if (error.response && error.response.data.message) {
                 return rejectWithValue(error.response.data.message);
@@ -48,6 +49,31 @@ export const join = createAsyncThunk<string, Member, { rejectValue: string }>(
         }
     }
 )
+
+export const login = createAsyncThunk<string, Member, { rejectValue: string }>(
+    'member/login',
+    async (userData: Member, { rejectWithValue }) => {
+        //callback function
+        console.log("로긴");
+        try {
+            const response = await axios.post(
+                 '/auth/login',
+                userData,
+                { withCredentials: true }
+            );
+
+            return response.data.accessToken;
+        } catch (error: any) {
+            if (error.response.data.status) {
+                return rejectWithValue('아이디와 비밀번호를 확인하세요');
+            } else {
+                return rejectWithValue('아이디와 비밀번호를 확인하세요');
+            }
+        }
+    }
+);
+
+
 
 
 
@@ -78,6 +104,20 @@ export const memberSlice = createSlice({
                 // 거절
                 state.isLoading = false;
                 state.isError = true;
+            })
+            .addCase(login.pending, (state, _) => {
+                state.isLoading = true;
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.token = action.payload;
+                state.isLogin = true;
+            })
+            .addCase(login.rejected, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.isError = true;
+                toast.error(action.payload);
             })
     }
 })

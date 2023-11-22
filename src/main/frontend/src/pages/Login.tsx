@@ -1,30 +1,60 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {AppDispatch, RootState} from "../stores/store";
+import {useDispatch, useSelector} from "react-redux";
+import {init,login} from "../stores/member/memberSlice";
 
+import React from 'react';
 
 
 function Login (){
-    const [id, setId] = useState('');
-    const [pwd, setPwd] = useState('');
+    const dispatch = useDispatch<AppDispatch>();
+    let [email, setEmail] = useState('');
+    let [password, setPwd] = useState('');
+    const { isLogin, isError } = useSelector((state: RootState) => state.member);
+
+    useEffect(() => {
+        if (isLogin) {
+            //navigate('/books/library');
+            alert("로그인성공");
+        }
+        if (isError) {
+            alert("로그인실패");
+            dispatch(init());
+        }
+    }, [isError, isLogin, dispatch]);
+
+
+    const onSubmit = (event : React.FormEvent<HTMLFormElement>) => {
+
+        event.preventDefault();
+
+        const loginData :{email :string, password : string}  = {
+            email,
+            password : password
+        };
+
+        dispatch(login(loginData));
+    }
 
     return (
         <Container>
-            <form>
+            <form onSubmit={onSubmit}>
                 <FormWrapper>
-                    <label htmlFor='id'>아이디</label>
+                    <label htmlFor='email'>이메일</label>
                     <input
-                        type='text'
-                        value={id}
-                        placeholder='아이디'
+                        type='email'
+                        placeholder='user@domain.com'
+                        onChange={(e :React.ChangeEvent<HTMLInputElement>)=>{ setEmail(e.target.value)}}
                     />
                 </FormWrapper>
                 <FormWrapper>
                     <label htmlFor='pwd'>비밀번호</label>
                     <input
                         type='password'
-                        value={pwd}
                         placeholder='비밀번호'
+                        onChange={(e :React.ChangeEvent<HTMLInputElement>)=>{ setPwd(e.target.value)}}
                     />
                 </FormWrapper>
                 <button type='submit' className='signInBtn'>

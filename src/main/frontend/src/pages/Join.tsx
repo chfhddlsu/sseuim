@@ -13,15 +13,12 @@ import {isDisabled} from "@testing-library/user-event/dist/utils";
 function Join () :JSX.Element {
     const dispatch :AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const [isDuple , setIsDuple] = useState(false);
-    const [disabled , setDisabled] = useState(false);
     const {isSuccess} = useSelector((state:RootState)=> state.member);
-    let [id , setId] = useState('');
 
     useEffect(()=>{
 
         if(isSuccess === true){
-            navigate('/login');
+            //navigate('/login');
         }
 
         dispatch( init() );
@@ -37,94 +34,43 @@ function Join () :JSX.Element {
 
     const onSubmit : SubmitHandler<Member> = (member :Member )  => {
 
-        if(disabled === false){
-            alert("아이디 중복체크 해주세요");
-            return;
-        }else if (isDuple === true){
-            alert("이미 사용중인 아이디 입니다.");
-            return;
-        }
-
-
         dispatch( join(member) );
-
-    }
-
-
-    const onClick = async () => {
-
-        setIsDuple(false);
-        id = watch("id");
-
-        if(id === ""){return}
-
-        try {
-             await axios.get(
-                    '/idCheck',
-                    {
-                        params : {id : id}
-                    }
-                )
-                 .then((res)=>{
-                     if( res.data != 0 ){
-                         setIsDuple(true);
-                         alert("아이디가 존재합니다.");
-                     }else{
-                         setDisabled(true);
-                         alert("사용가능한 아이디 입니다.");
-                     }
-                })
-
-        }catch (e :any){
-            console.log(e.message);
-        }
 
     }
 
     return (
         <Container>
             <form onKeyDown={(event)=>{return event.key != 'Enter'}} onSubmit={handleSubmit(onSubmit)}>
+
                 <Label>
-                    <label htmlFor='id'>아이디</label>
-                    {errors.id && <span >{errors.id.message}</span>}
+                    <label htmlFor='email'>이메일</label>
+                    {errors.email && <span >{errors.email.message}</span>}
                 </Label>
                 <FormWrapper>
                     <input
-                        type='text'
-                        maxLength={20}
-                        {...register('id',{
-                                required : '아이디를 입력해주세요',
-                                minLength : {
-                                    value : 2,
-                                    message : '2글자 이상 입력해 주세요'
-                                },
-                                pattern: {
-                                    value: /^[a-zA-Z0-9]+$/,
-                                    message: "아이디는 영문과 숫자만 입력가능합니다"
-                                }
-                            })
-                        }
+                        type='email'
+                        placeholder='user@email.com'
+
+                        {...register('email', {
+                            required: '이메일을 입력해주세요.',
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                                message: "올바른 이메일 형태가 아닙니다."
+                            }
+                        })}
                     />
-                    <CheckButton
-                        type='button'
-                        color = ''
-                        onClick={onClick}
-                        onKeyDown={(e:React.KeyboardEvent)=>{ if(e.key === 'Enter') return; }}
-                        disabled ={disabled}
-                    >중복체크
-                    </CheckButton>
                 </FormWrapper>
 
                 <Label>
-                    <label htmlFor='pwd'>비밀번호</label>
-                    {errors.pwd && <span >{errors.pwd.message}</span>}
+                    <label htmlFor='password'>비밀번호</label>
+                    {errors.password && <span >{errors.password.message}</span>}
                 </Label>
                 <FormWrapper>
                     <input
                         type='password'
                         maxLength={20}
 
-                        {...register('pwd', {
+                        {...register('password', {
                             required: '비밀번호를 입력해주세요.',
                             minLength: {
                                 value: 6,
@@ -145,7 +91,7 @@ function Join () :JSX.Element {
 
                         {...register("rePwd", {
                             validate: (value, formValues) => {
-                                return value === formValues.pwd || "비밀번호가 일치하지 않습니다."
+                                return value === formValues.password || "비밀번호가 일치하지 않습니다."
                             }
                         })}
                     />
@@ -206,24 +152,6 @@ function Join () :JSX.Element {
                     />
                 </FormWrapper>
 
-                <Label>
-                    <label htmlFor='email'>이메일</label>
-                    {errors.email && <span >{errors.email.message}</span>}
-                </Label>
-                <FormWrapper>
-                    <input
-                        type='email'
-                        placeholder='user@email.com'
-
-                        {...register('email', {
-                            required: '이메일을 입력해주세요.',
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                                message: "올바른 이메일 형태가 아닙니다."
-                            }
-                        })}
-                    />
-                </FormWrapper>
 
                 <JoinButton type='submit' className='signInBtn' disabled={isSubmitting}>
                     회원 가입하기
@@ -324,13 +252,5 @@ const Label = styled.div`
     color: red;
   }
 `
-const CheckButton = styled.button`
-  background-color: ${props => props.color == "" ? '#9ba986' : props.color};
-  font-family: 'omyu_pretty';
-  width: 80px;
-  height: 25px;
-  border-radius: 0.25rem;
-  margin: 0.1rem 0.2rem 0.2rem 0.3rem;
-  border: 0.063rem solid darkolivegreen;
-`
+
 export default Join;

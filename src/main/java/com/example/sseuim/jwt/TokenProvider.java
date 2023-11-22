@@ -57,7 +57,7 @@ public class TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-
+        log.info( "토큰 정보 =========" + accessToken);
         return JwtToken.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
