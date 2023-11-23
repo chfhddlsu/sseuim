@@ -1,10 +1,12 @@
 import {combineReducers, configureStore } from "@reduxjs/toolkit";
 import memberReducer from './member/memberSlice'
+import bookReducer from "./book/bookSlice";
 import { persistReducer } from "redux-persist";
 import storage from 'redux-persist/lib/storage/session';
 
 const rootReducers  = combineReducers({
-    member : memberReducer
+    member : memberReducer,
+    book   : bookReducer
 })
 
 const persistConfig = {

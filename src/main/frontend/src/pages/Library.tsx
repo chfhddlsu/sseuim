@@ -1,5 +1,5 @@
 
-function Library (){
+function Library () :JSX.Element{
     
     return (
         <>

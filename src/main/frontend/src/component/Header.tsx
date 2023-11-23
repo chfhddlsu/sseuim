@@ -28,7 +28,7 @@ const Menu = styled.ul`
   list-style: none;
   display: flex;
   margin: 0;
-  padding-left: 0;
+  padding-left: 2rem;
   font-family: 'NPSfontBold';
 
 `
@@ -36,7 +36,7 @@ const Menu = styled.ul`
 const StyledLink = styled(Link)`
   border-radius: 0.3rem;
   text-align: center;
-  padding: 0.3rem;
+  padding: 0.5rem;
   text-decoration: none;
   color: #282c34;
   &:hover {

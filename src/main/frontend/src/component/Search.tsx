@@ -38,7 +38,7 @@ function Search({ keyword, setBooks, setKeyword } : props ) {
             e.preventDefault();  // 새로고침 방지
 
             const API_URL  = process.env.REACT_APP_API_KEY
-            console.log("dd" + API_URL);
+
             try{
                 const {data} = await axios.get(API_URL + keyword);
 
