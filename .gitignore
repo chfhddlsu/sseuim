@@ -22,7 +22,7 @@ bin/
 *.iml
 *.ipr
 out/
-
+*/main/resources/application.properties
 
 ### NetBeans ###
 /nbproject/private/
@@ -34,4 +34,3 @@ out/
 ### VS Code ###
 .vscode/
 
-application.properties

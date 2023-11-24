@@ -64,6 +64,7 @@ export const login = createAsyncThunk<string, Member, { rejectValue: string }>(
 
             return response.data.accessToken;
         } catch (error: any) {
+            console.log("에러", error)
             if (error.response.data.status) {
                 return rejectWithValue('아이디와 비밀번호를 확인하세요');
             } else {

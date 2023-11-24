@@ -3,6 +3,10 @@ import { BsStarFill } from 'react-icons/bs';
 import { Dispatch, SetStateAction } from 'react';
 
 
+interface StarRatingProps {
+    star: number;
+    setStar: Dispatch<SetStateAction<number>>;
+}
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,11 +25,8 @@ const Star = styled(BsStarFill)`
   font-size: 1.375rem;
 `;
 
-type props = {
-    star : number;
-    setStar : Function;
-}
-const StarRating = ({star, setStar} : props) => {
+
+const StarRating = ({star, setStar} : StarRatingProps) => {
     const starArr = [1, 2, 3, 4, 5];
 
     return (

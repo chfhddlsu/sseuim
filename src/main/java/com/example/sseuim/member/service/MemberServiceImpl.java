@@ -30,13 +30,6 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
     }
 
-    @Override
-    public int getIdDuple(String id){
-
-
-        return mapper.getIdDuple(id);
-    }
-
 
 
 }

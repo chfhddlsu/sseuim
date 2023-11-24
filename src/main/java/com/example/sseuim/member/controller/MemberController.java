@@ -26,28 +26,6 @@ public class MemberController {
         return ResponseEntity.ok((myInfoBySecurity));
     }
 
-    @GetMapping("idCheck")
-    public int getIsDuple(@RequestParam String id ){
-        int result = 0;
-
-        try{
-
-            if(!id.isEmpty()){
-                result = service.getIdDuple(id);
-            }else{
-                throw  new NullPointerException("아이디를 입력해주세요");
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-            log.error(e.getMessage());
-        }
-        log.info("사용자 아이디 ====== > " + id);
-
-
-        return result;
-    }
-
 
 
 }

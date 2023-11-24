@@ -2,15 +2,15 @@ import styled from "styled-components";
 import Nav from 'react-bootstrap/Nav';
 import BookCover from "../component/BookCover";
 import {useLocation} from "react-router-dom";
-import React,{useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {useDispatch, useSelector}  from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
-import StarRating from "../component/StarRating";
-import { CiMemoPad } from 'react-icons/ci';
+import {AppDispatch, RootState} from "../stores/store";
 import {getBookDetail} from "../stores/book/bookSlice";
 import {BookDetail, Books} from "../types/basic";
-
+import StatusModal from '../component/StatusModal'
+import BookRecord from "./BookRecord";
 
 function SearchBook() :JSX.Element{
     const bookInit = {
@@ -28,15 +28,17 @@ function SearchBook() :JSX.Element{
         score         : 0,
         memo          : [],
         memoCount     : 0
-    }
-    const [book , setBook] = useState<BookDetail>(bookInit);
-    const {state} = useLocation();
-    let [tab, setTab]= useState(2);
-    const dispatch = useDispatch();
-  //  const bookDetail= useSelector((state)=> state.book.bookDetail)
-   // const [star, setStar] = useState(bookDetail.score);
+    };
 
-        console.log("dd", state.bookId);
+    const bookDetail= useSelector((state :RootState)=> state.book.bookDetail)
+    const [book , setBook] = useState<BookDetail>(bookInit);
+    const [star, setStar] = useState<number>(bookDetail.score);
+    let [tab, setTab]= useState(2);
+    const {state} = useLocation();
+    const dispatch = useDispatch<AppDispatch>();
+
+
+
     const getBook = async () => {
         const URL = process.env.REACT_APP_ITEM_KEY
 
@@ -55,12 +57,6 @@ function SearchBook() :JSX.Element{
 
     },[dispatch, state])
 
-    const selectList = [
-        { value : '' , text : '선택' },
-        { value : 'WISH', text : '읽고싶은'},
-        { value : 'READING', text : '읽고있는'},
-        { value : 'DONE', text : '다 읽은'}
-    ]
 
     return (
         <>
@@ -71,7 +67,6 @@ function SearchBook() :JSX.Element{
                         <div style={{fontSize: '30px'}}> {book.title} </div>
                         <div> {book.author} </div>
                         <div> {book.publisher} </div>
-                        <AddBtn>➕ 책 추가</AddBtn>
                     </BookContentKeyword>
                 </BookContent>
             </Layout>
@@ -87,8 +82,8 @@ function SearchBook() :JSX.Element{
             </Nav>
 
 
-            { tab === 2 ? null : <BookInfo info={book}/>}
-           {/* { tab === 2 ?  <BookHistory selectList={selectList}  item={bookDetail} star={star} setStar={setStar}/> : <SearchBook book={book}/>}*/}
+
+            { tab === 2 ?  <BookRecord star={star} setStar={setStar}/> : <BookInfo info={book}/>}
 
         </>
     )
@@ -114,51 +109,6 @@ function BookInfo(props : {info :BookDetail} ) : JSX.Element {
         </>
     )
 }
-
-/*
-function BookHistory(props){
-    const book = props.item
-    console.log("dd", props.star)
-    return(
-        <>
-            <Layout>
-                <BookStateBox>
-                    <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 상태</label>
-
-                    <select id='bookStatus' value={book.status} >
-                        {props.selectList.map((item, idx) => (
-                            <option value={item.value} key={idx}>
-                                {item.text}
-                            </option>
-                        ))}
-                    </select>
-                </BookStateBox>
-
-                <BookStateBox >
-                    <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>별점</label>
-                    <StarRating star={props.star} setStar={props.setStar}></StarRating>
-                </BookStateBox>
-
-                <BookStateBox>
-                    <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 메모</label>
-                    <IconBox>
-                        <li>
-                            <Memo/>
-                            <div className='IconSpan'>0</div>
-                        </li>
-
-                    </IconBox>
-                </BookStateBox>
-
-            </Layout>
-
-        </>
-    );
-    }
-*/
-
-
-
 
 const Layout = styled.div`
   margin: 0.9rem 0.75rem 1.25rem 0.75rem;
@@ -195,61 +145,7 @@ const BookContent = styled.li`
     margin-left: 1rem;
   }
 `;
-const AddBtn = styled.button`
-  background-color: #9ba986;
-  padding: 0.5rem 0.75rem;
-  border: 0.063rem solid var(--clear-day);
-  border-radius: 0.25rem;
-  width: 25%;
-  margin-bottom: 0.7rem;
-  margin-top: 1rem;
-  color: black;
-  font-family: 'omyu_pretty';
 
-  &:hover {
-    cursor: pointer;
-  }
-`
-const BookStateBox = styled.div`
-  flex-direction: column; 
-  display: flex;
-  margin-left: 1rem;
-  margin-bottom: 2rem;
-  font-family: 'omyu_pretty';
-  select {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    border: 0.063rem solid var(--clear-day);
-    border-radius: 0.25rem;
-    background-color: ${(props) => props.color || '#9ba986'};
-    font-family: 'omyu_pretty';
-    width: 200px;
-  }
-`;
 
-const Memo = styled(CiMemoPad)`
-  display:block;
-  position:relative;
-
-  &:hover {
-    transform: translate(-0.1rem);
-    cursor: pointer;
-  }
-  font-size: 1.5rem;
-`
-
-const IconBox = styled.ul`
-  
-  li{
-    display: inline-block;
-    position: relative;
-
-    .IconSpan{
-      position:absolute;
-      left:50%;  line-height:1.462em; transform:translate(-50%, 0)
-    }
-  }
-`
 
 export default SearchBook;

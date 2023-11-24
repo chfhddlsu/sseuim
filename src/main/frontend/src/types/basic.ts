@@ -29,10 +29,10 @@ export interface BookDetail {
     categoryName  : string,
     publisher     : string,
     itemPage      : string,
-    status?        : string,
-    score?         : number,
+    status?       : string,
+    score         : number,
     memo?         : Memo[],
-    memoCount?     : number
+    memoCount?    : number
 }
 
 export interface Memo {
