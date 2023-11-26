@@ -1,9 +1,14 @@
 package com.example.sseuim.jwt;
 
 import com.example.sseuim.jwt.entity.JwtToken;
+import com.example.sseuim.member.domain.Member;
+import com.example.sseuim.member.domain.MemberRequestVo;
+import com.example.sseuim.member.domain.MemberResponseVo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.*;
@@ -22,7 +28,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private static final String AUTHORITIES_KEY = "auth";
+    private static final String AUTHORITIES_KEY = "email";
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //3시간
     private final Key key;
@@ -40,11 +46,7 @@ public class TokenProvider {
      * @param : authentication  Authentication객체
      * @return :
      */
-    public JwtToken createToken(Authentication authentication){
-
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public JwtToken createToken(Authentication authentication, MemberRequestVo vo){
 
         long now = (new Date()).getTime();
         Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
@@ -52,12 +54,12 @@ public class TokenProvider {
         // Access Token 생성
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+                .claim(AUTHORITIES_KEY,  vo.getEmail())
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        log.info( "토큰 정보 =========" + accessToken);
+        log.info( "토큰 정보 ========= {}" + accessToken);
         return JwtToken.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
@@ -133,6 +135,18 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
+
+    public String getEmailByToken(String token ) {
+
+        String email = "";
+
+        if(validateToken(token)){
+            email = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().get("email").toString();
+        }
+
+        return email;
+    }
+
 
 
 

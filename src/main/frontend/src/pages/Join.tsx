@@ -7,8 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {init, join} from "../stores/member/memberSlice";
 import {AppDispatch, RootState} from "../stores/store";
 import React, {InputHTMLAttributes, useEffect, useState} from "react";
-import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
-import {isDisabled} from "@testing-library/user-event/dist/utils";
+
 
 function Join () :JSX.Element {
     const dispatch :AppDispatch = useDispatch();

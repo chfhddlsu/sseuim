@@ -32,12 +32,12 @@ public class AuthService {
         return MemberResponseVo.of(memberRepository.save(member));
     }
 
-    public JwtToken login(MemberRequestVo requestDto) {
-        UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+    public JwtToken login(MemberRequestVo requestVo) {
+        UsernamePasswordAuthenticationToken authenticationToken = requestVo.toAuthentication();
 
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 
-        return tokenProvider.createToken(authentication);
+        return tokenProvider.createToken(authentication, requestVo);
     }
 
 }

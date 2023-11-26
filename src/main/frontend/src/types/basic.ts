@@ -29,7 +29,7 @@ export interface BookDetail {
     categoryName  : string,
     publisher     : string,
     itemPage      : string,
-    status?       : string,
+    status       : string,
     score         : number,
     memo?         : Memo[],
     memoCount?    : number

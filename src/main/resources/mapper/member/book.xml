@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.sseuim.book.mapper.BookMapper">
+
+    <insert id="saveMyBook" parameterType="BookVo">
+        INSERT
+            INTO USER_BOOK (
+                 ISBN13,
+                 USER_ID,
+                 STATUS,
+                 SCORE,
+                 START_DATE,
+                 END_DATE,
+            )
+            VALUES
+            (
+                #{isbn13},
+                #{userId},
+                #{status},
+                #{score},
+                #{startDate},
+                #{endDate},
+            )
+
+    </insert>
+
+    <insert id="saveBookDetail" parameterType="BookVo">
+        INSERT
+            INTO BOOK_D (
+                ISBN13,
+                TITLE,
+                AUTHOR,
+                COVER,
+                PUB_DATE,
+                DESCRIPTION,
+                PRICE_STANDARD,
+                CATEGORY_NAME,
+                PUBLISHER,
+                ITEM_PAGE,
+            )
+            VALUES
+            (
+                #{isbn13},
+                #{title},
+                #{author},
+                #{cover},
+                #{pubDate},
+                #{description},
+                #{priceStandard},
+                #{categoryName},
+                #{publisher},
+                #{itemPage},
+            )
+
+    </insert>
+
+</mapper>

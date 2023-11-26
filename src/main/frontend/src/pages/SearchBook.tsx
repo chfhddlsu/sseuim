@@ -7,10 +7,9 @@ import {useDispatch, useSelector}  from "react-redux";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import {AppDispatch, RootState} from "../stores/store";
-import {getBookDetail} from "../stores/book/bookSlice";
 import {BookDetail, Books} from "../types/basic";
-import StatusModal from '../component/StatusModal'
 import BookRecord from "./BookRecord";
+import {init, getBookDetail} from "../stores/book/bookSlice";
 
 function SearchBook() :JSX.Element{
     const bookInit = {
@@ -26,13 +25,11 @@ function SearchBook() :JSX.Element{
         itemPage      : '',
         status        : '',
         score         : 0,
-        memo          : [],
-        memoCount     : 0
     };
 
-    const bookDetail= useSelector((state :RootState)=> state.book.bookDetail)
+
     const [book , setBook] = useState<BookDetail>(bookInit);
-    const [star, setStar] = useState<number>(bookDetail.score);
+
     let [tab, setTab]= useState(2);
     const {state} = useLocation();
     const dispatch = useDispatch<AppDispatch>();
@@ -52,8 +49,7 @@ function SearchBook() :JSX.Element{
 
     }
     useEffect(()=>{
-       // dispatch(getBookDetail(state.bookId));
-        getBook()
+       getBook();
 
     },[dispatch, state])
 
@@ -81,9 +77,7 @@ function SearchBook() :JSX.Element{
                 </Nav.Item>
             </Nav>
 
-
-
-            { tab === 2 ?  <BookRecord star={star} setStar={setStar}/> : <BookInfo info={book}/>}
+            { tab === 2 ?  <BookRecord bookId={state.bookId}/> : <BookInfo info={book}/>}
 
         </>
     )

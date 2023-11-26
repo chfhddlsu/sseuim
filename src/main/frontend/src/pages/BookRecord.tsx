@@ -1,27 +1,34 @@
 import styled from 'styled-components';
 import { CiMemoPad } from 'react-icons/ci';
 import StarRating from "../component/StarRating";
-import React, {Dispatch, SetStateAction, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import StatusModal from "../component/StatusModal";
-interface Props {
-    star: number;
-    setStar: Dispatch<SetStateAction<number>>;
-}
-function BookRecord(props :Props){
+import {useSelector} from "react-redux";
+import {RootState} from "../stores/store";
 
+type Type = {
+    bookId : string
+}
+
+function BookRecord(bookId :Type) :JSX.Element{
+    const bookDetail= useSelector((state :RootState)=> state.book.bookDetail)
     const [show, setShow] = useState(false);
+    const [star, setStar] = useState<number>(bookDetail.score);
+    const [status, setStatus] = useState<string>(bookDetail.status);
 
     return (
         <Layout>
             <BookStateBox>
                 <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 상태</label>
-                <AddBtn onClick={()=>{setShow(true)}}>➕ 책 추가</AddBtn>
-                <StatusModal show={show} setShow={setShow} />
+                <AddBtn onClick={()=>{setShow(true)}}>
+                    {status === undefined ? "➕ 책 추가" : status}
+                </AddBtn>
+                <StatusModal show={show} setShow={setShow} bookId={bookId.bookId} ></StatusModal>
             </BookStateBox>
 
             <BookStateBox >
                 <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>별점</label>
-                <StarRating star={props.star} setStar={props.setStar}></StarRating>
+                <StarRating star={star} setStar={setStar}></StarRating>
             </BookStateBox>
 
             <BookStateBox>

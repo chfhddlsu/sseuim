@@ -45,19 +45,41 @@ const initialState : bookReducer = {
 }
 
 
-export const getBookDetail = createAsyncThunk<BookDetail, string,  {rejectValue : string}>(
+export const getBookDetail = createAsyncThunk<BookDetail, string , {rejectValue : string}>(
     'book/bookDetail',
     async (bookId, thunkAPI) => {
         try{
+            const URL = process.env.REACT_APP_ITEM_KEY
+
+            const {data} = await axios.get (
+                URL + bookId,
+            );
+
+            return data.item[0];
+
+        }catch (e :any){
+            return thunkAPI.rejectWithValue(e.message);
+        }
+    }
+);
+
+export const saveBook = createAsyncThunk(
+    'book/saveBook',
+    async (book :BookDetail, thunkAPI) => {
+        try{
             const state = thunkAPI.getState() as RootState
             const {token} = state.member;
-            const {data} = await axios.get (
-                '/bookDetail',
+
+           // state.book.bookDetail.status = status;
+            console.log("data",  token);
+
+            const {data} = await axios.post (
+                '/book/saveBook',
+                book,
                 {
                     headers : {
                         Authorization : token,  // 토큰을 가진 사람만 데이터에 접근 가능
                     },
-                    params : {bookId : bookId}
                 }
             );
 
@@ -94,6 +116,24 @@ export const bookSlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 toast.error(action.payload);
+            })
+            /*책 저장 */
+            .addCase(saveBook.pending, (state, _) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.isSuccess = false;
+            })
+            .addCase(saveBook.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+
+            })
+            .addCase(saveBook.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                toast.error("저장에 실패했습니다.");
             });
     }
 

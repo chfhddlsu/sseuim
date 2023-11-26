@@ -1,17 +1,39 @@
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Dispatch, ReactChildren, ReactNode, SetStateAction, useEffect, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import ListGroup from 'react-bootstrap/ListGroup';
 import { FaTrash } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../stores/store";
+import {saveBook} from "../stores/book/bookSlice";
+import React from 'react';
+import axios from "axios";
+import {BookDetail} from "../types/basic";
 
 type Modal ={
     show : boolean
     setShow : Function
+    bookId :string
 }
-function StatusModal(props :Modal) {
+function StatusModal({show, setShow, bookId} : Modal) {
+    const bookInit = {
+        title : '',
+        author        : '',
+        cover         : '',
+        pubDate       : '',
+        description   : '',
+        isbn13        : '',  // bookId
+        priceStandard : 0,
+        categoryName  : '',
+        publisher     : '',
+        itemPage      : '',
+        status        : '',
+        score         : 0,
+    };
+
+    const bookDetail= useSelector((state :RootState)=> state.book.bookDetail)
     const [check, setCheck] = useState ([false, false, false, false])
     const statusList = [
         { value : 'WISH',       text : '읽고싶은 📘'},
@@ -19,10 +41,28 @@ function StatusModal(props :Modal) {
         { value : 'DONE',       text : '다 읽은 📕'},
         { value : 'STOP',       text : '멈춤 🚫'},
     ]
-    const handleClose = () => props.setShow(false);
+    const [status , setStatus] = useState<string>(bookDetail.status);
+    const handleClose = () => setShow(false);
+    const dispatch = useDispatch<AppDispatch>();
+    const [book , setBook] = useState<BookDetail>(bookInit);
 
+    const getBookDate = async ()=>{
+        const URL = process.env.REACT_APP_ITEM_KEY
 
-    function OnClickHandler (idx :number, val :string)  {
+        try{
+            const {data} = await  axios.get(URL + bookId);
+
+            setBook(data.item[0]);
+        }catch (e :any){
+            console.log(e.message());
+        }
+    }
+
+    useEffect(()=>{
+        getBookDate();
+    },[])
+
+    function OnClickStatus (idx :number, val :string)  {
 
         let copy = [...check];
 
@@ -35,11 +75,25 @@ function StatusModal(props :Modal) {
         }
 
         setCheck(copy);
+        setStatus(val);
+        console.log("ddd", status);
+        book.status = status;
+
+        setBook(book)
+
+
+
+        console.log("zmfflr", book);
+        dispatch(saveBook(book));
+    }
+
+    function OnClickDelete(){
+
     }
 
     return (
 
-        <Modal show={props.show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>독서 상태</Modal.Title>
             </Modal.Header>
@@ -49,32 +103,27 @@ function StatusModal(props :Modal) {
                        {
                            statusList.map((item, idx)=>{
                                return(
-
                                    <StatusItem
                                        id={item.value} key={idx}
-                                       onClick={()=>{OnClickHandler(idx, item.value)}}
+                                       onClick={()=>{OnClickStatus(idx, item.value)}}
 
                                    >
-                                       {check[idx] === false ? null : <span><FaCheck/></span>}
-                                       {item.text}
+                                   {check[idx] === false ? null : <span><FaCheck/></span>}
+                                   {item.text}
                                    </StatusItem>
                                )
                             })
-
                        }
                    </ListBox>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="danger" style={{marginRight:'20rem', width:'4rem'}} onClick={handleClose}>
+                <Button variant="danger" style={{marginRight:'20rem', width:'4rem'}} onClick={OnClickDelete}>
                     <FaTrash/>
                 </Button>
-                <Button variant="secondary" onClick={handleClose}>
-                    Close
-                </Button>
+                <Button variant="secondary" onClick={handleClose}>Close</Button>
             </Modal.Footer>
         </Modal>
-
     );
 }
 
