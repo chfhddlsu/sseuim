@@ -7,12 +7,12 @@
     <insert id="saveMyBook" parameterType="BookVo">
         INSERT
             INTO USER_BOOK (
-                 ISBN13,
-                 USER_ID,
-                 STATUS,
-                 SCORE,
-                 START_DATE,
-                 END_DATE,
+                ISBN13,
+                USER_ID,
+                STATUS,
+                SCORE,
+                START_DATE,
+                END_DATE
             )
             VALUES
             (
@@ -21,14 +21,19 @@
                 #{status},
                 #{score},
                 #{startDate},
-                #{endDate},
+                #{endDate}
             )
-
+        ON DUPLICATE KEY
+            UPDATE
+                STATUS     = #{status},
+                SCORE      = #{score},
+                START_DATE = #{startDate},
+                END_DATE   = #{endDate}
     </insert>
 
     <insert id="saveBookDetail" parameterType="BookVo">
         INSERT
-            INTO BOOK_D (
+            INTO USER_BOOK_D (
                 ISBN13,
                 TITLE,
                 AUTHOR,
@@ -38,7 +43,7 @@
                 PRICE_STANDARD,
                 CATEGORY_NAME,
                 PUBLISHER,
-                ITEM_PAGE,
+                ITEM_PAGE
             )
             VALUES
             (
@@ -51,9 +56,32 @@
                 #{priceStandard},
                 #{categoryName},
                 #{publisher},
-                #{itemPage},
+                #{itemPage}
             )
 
     </insert>
+
+    <select id="getUserStatus" resultType="BookVo">
+        SELECT
+            UB.ISBN13,
+            UB.STATUS,
+            UB.SCORE,
+            UB.START_DATE,
+            UB.END_DATE,
+            UBD.TITLE,
+            UBD.AUTHOR,
+            UBD.COVER,
+            UBD.PUB_DATE,
+            UBD.DESCRIPTION,
+            UBD.PRICE_STANDARD,
+            UBD.CATEGORY_NAME,
+            UBD.PUBLISHER,
+            UBD.ITEM_PAGE
+        FROM  USER_BOOK UB
+        INNER JOIN USER_BOOK_D UBD
+        ON UB.ISBN13 = UBD.ISBN13
+        WHERE UB.ISBN13 = #{isbn13}
+          AND UB.USER_ID = #{userId}
+    </select>
 
 </mapper>

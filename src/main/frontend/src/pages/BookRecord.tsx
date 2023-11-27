@@ -21,7 +21,7 @@ function BookRecord(bookId :Type) :JSX.Element{
             <BookStateBox>
                 <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 상태</label>
                 <AddBtn onClick={()=>{setShow(true)}}>
-                    {status === undefined ? "➕ 책 추가" : status}
+                    {status === "" ? "➕ 책 추가" : status}
                 </AddBtn>
                 <StatusModal show={show} setShow={setShow} bookId={bookId.bookId} ></StatusModal>
             </BookStateBox>

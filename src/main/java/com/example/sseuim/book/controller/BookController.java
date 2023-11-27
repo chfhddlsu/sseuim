@@ -23,14 +23,11 @@ public class BookController {
         this.common = common;
     }
     @PostMapping("/saveBook")
-    public int saveBook(@RequestBody BookVo vo, HttpServletRequest request){
-        int result = 0;
+    public BookVo saveBook(@RequestBody BookVo vo, HttpServletRequest request){
 
         String token = common.getToken(request);
 
-        service.saveBook(vo, token);
-
-        return result;
+        return service.saveBook(vo, token);
 
     }
 

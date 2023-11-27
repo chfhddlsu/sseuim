@@ -9,4 +9,6 @@ public interface BookMapper {
     int saveMyBook(BookVo vo);
 
     int saveBookDetail(BookVo vo);
+
+    BookVo  getUserStatus(BookVo vo);
 }

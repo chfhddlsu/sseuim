@@ -23,20 +23,20 @@ const initialState : bookReducer = {
     },
 
     bookDetail : {
-        title         : '',
-        author        : '',
-        cover         : '',
-        pubDate       : '',
-        description   : '',
-        isbn13        : '',  // bookId
-        priceStandard : 0,
-        categoryName  : '',
-        publisher     : '',
-        itemPage      : '',
-        status        : '',
-        score         : 0,
-        memo          : [],
-        memoCount     : 0
+        title          : '',
+        author         : '',
+        cover          : '',
+        pubDate        : '',
+        description    : '',
+        isbn13         : '',  // bookId
+        price_standard : 0,
+        category_name  : '',
+        publisher      : '',
+        itemPage       : '',
+        status         : '',
+        score          : 0,
+        memo           : [],
+        memoCount      : 0
     },
 
     isError: false,
@@ -63,15 +63,12 @@ export const getBookDetail = createAsyncThunk<BookDetail, string , {rejectValue 
     }
 );
 
-export const saveBook = createAsyncThunk(
+export const saveBook = createAsyncThunk<BookDetail, BookDetail>(
     'book/saveBook',
     async (book :BookDetail, thunkAPI) => {
         try{
             const state = thunkAPI.getState() as RootState
             const {token} = state.member;
-
-           // state.book.bookDetail.status = status;
-            console.log("data",  token);
 
             const {data} = await axios.post (
                 '/book/saveBook',
@@ -90,6 +87,7 @@ export const saveBook = createAsyncThunk(
         }
     }
 );
+
 
 
 export const bookSlice = createSlice({
@@ -127,7 +125,8 @@ export const bookSlice = createSlice({
                 state.isLoading = false;
                 state.isError = false;
                 state.isSuccess = true;
-
+                state.bookDetail = {...action.payload};
+                toast.success("상태가 변경되었습니다.");
             })
             .addCase(saveBook.rejected, (state, action) => {
                 state.isLoading = false;

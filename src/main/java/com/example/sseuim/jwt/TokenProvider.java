@@ -136,18 +136,4 @@ public class TokenProvider {
         }
     }
 
-    public String getEmailByToken(String token ) {
-
-        String email = "";
-
-        if(validateToken(token)){
-            email = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().get("email").toString();
-        }
-
-        return email;
-    }
-
-
-
-
 }

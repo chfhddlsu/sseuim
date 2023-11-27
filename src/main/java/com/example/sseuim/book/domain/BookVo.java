@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BookVo {
     private String isbn13;
-    private int userId;
+    private Long userId;
     private String title;
     private String author;
     private String cover;

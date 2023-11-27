@@ -25,8 +25,8 @@ function StatusModal({show, setShow, bookId} : Modal) {
         pubDate       : '',
         description   : '',
         isbn13        : '',  // bookId
-        priceStandard : 0,
-        categoryName  : '',
+        price_standard : 0,
+        category_name  : '',
         publisher     : '',
         itemPage      : '',
         status        : '',
@@ -75,15 +75,12 @@ function StatusModal({show, setShow, bookId} : Modal) {
         }
 
         setCheck(copy);
-        setStatus(val);
-        console.log("ddd", status);
-        book.status = status;
+
+
+        book.status = val;
 
         setBook(book)
 
-
-
-        console.log("zmfflr", book);
         dispatch(saveBook(book));
     }
 
