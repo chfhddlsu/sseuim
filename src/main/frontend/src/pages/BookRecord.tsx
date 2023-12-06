@@ -3,8 +3,10 @@ import { CiMemoPad } from 'react-icons/ci';
 import StarRating from "../component/StarRating";
 import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import StatusModal from "../component/StatusModal";
-import {useSelector} from "react-redux";
-import {RootState} from "../stores/store";
+import {useSelector, useDispatch} from "react-redux";
+import {AppDispatch, RootState} from "../stores/store";
+import {getBookDetail} from "../stores/book/bookSlice";
+import {init} from "../stores/book/bookSlice";
 
 type Type = {
     bookId : string
@@ -15,13 +17,35 @@ function BookRecord(bookId :Type) :JSX.Element{
     const [show, setShow] = useState(false);
     const [star, setStar] = useState<number>(bookDetail.score);
     const [status, setStatus] = useState<string>(bookDetail.status);
+    const dispatch = useDispatch<AppDispatch>();
+    const statusList = [
+        { value : 'WISH',       text : '읽고싶은 📘'},
+        { value : 'READING',    text : '읽고있는 📖'},
+        { value : 'DONE',       text : '다 읽은 📕'},
+        { value : 'STOP',       text : '멈춤 🚫'},
+    ]
+
+    function getUserBook(){
+           dispatch(getBookDetail(bookId.bookId));
+    }
+
+    useEffect(()=>{
+        init();
+        getUserBook();
+    },[dispatch,status,show])
 
     return (
         <Layout>
             <BookStateBox>
                 <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 상태</label>
                 <AddBtn onClick={()=>{setShow(true)}}>
-                    {status === "" ? "➕ 책 추가" : status}
+                    {bookDetail.status === "" ? "➕ 책 추가" :
+                        statusList.map((val, idx)=>{
+                            return (
+                                bookDetail.status === val.value ? val.text : ""
+                            )
+                        })
+                    }
                 </AddBtn>
                 <StatusModal show={show} setShow={setShow} bookId={bookId.bookId} ></StatusModal>
             </BookStateBox>

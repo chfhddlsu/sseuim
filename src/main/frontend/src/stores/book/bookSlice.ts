@@ -3,6 +3,7 @@ import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../store";
 import axios from "axios";
 import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export interface bookReducer {
     book      : Books
@@ -45,17 +46,23 @@ const initialState : bookReducer = {
 }
 
 
-export const getBookDetail = createAsyncThunk<BookDetail, string , {rejectValue : string}>(
-    'book/bookDetail',
+export const getBookDetail = createAsyncThunk<BookDetail,string, {rejectValue : string}>(
+    'book/getBookStatus',
     async (bookId, thunkAPI) => {
         try{
-            const URL = process.env.REACT_APP_ITEM_KEY
-
-            const {data} = await axios.get (
-                URL + bookId,
+            const state = thunkAPI.getState() as RootState
+            const {token} = state.member;
+            const {data} = await axios.post (
+                '/book/getBookStatus',
+                {isbn13 : bookId},
+                {
+                    headers: {
+                        Authorization: token,  // 토큰을 가진 사람만 데이터에 접근 가능
+                    },
+                }
             );
 
-            return data.item[0];
+            return data;
 
         }catch (e :any){
             return thunkAPI.rejectWithValue(e.message);
@@ -72,6 +79,31 @@ export const saveBook = createAsyncThunk<BookDetail, BookDetail>(
 
             const {data} = await axios.post (
                 '/book/saveBook',
+                book,
+                {
+                    headers : {
+                        Authorization : token,  // 토큰을 가진 사람만 데이터에 접근 가능
+                    },
+                }
+            );
+
+            return data;
+
+        }catch (e :any){
+            return thunkAPI.rejectWithValue(e.message);
+        }
+    }
+);
+
+export const deleteBook = createAsyncThunk(
+    'book/deleteBook',
+    async (book :BookDetail, thunkAPI) => {
+        try{
+            const state = thunkAPI.getState() as RootState
+            const {token} = state.member;
+
+            const {data} = await axios.post (
+                '/book/deleteBook',
                 book,
                 {
                     headers : {
@@ -125,14 +157,39 @@ export const bookSlice = createSlice({
                 state.isLoading = false;
                 state.isError = false;
                 state.isSuccess = true;
-                state.bookDetail = {...action.payload};
-                toast.success("상태가 변경되었습니다.");
+                toast.success("상태가 변경되었습니다.",{
+                    autoClose : 3000,
+                    position : 'bottom-center'
+                });
             })
             .addCase(saveBook.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;
-                toast.error("저장에 실패했습니다.");
+                toast.error("저장에 실패했습니다.",{
+                    autoClose : 3000,
+                    position : 'bottom-center'
+                });
+            })
+            /*책 삭제 */
+            .addCase(deleteBook.pending, (state, _) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.isSuccess = false;
+            })
+            .addCase(deleteBook.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                toast.success("도서가 삭제되었습니다.",{
+                    autoClose : 3000,
+                    position : 'bottom-center'
+                });
+            })
+            .addCase(deleteBook.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
             });
     }
 

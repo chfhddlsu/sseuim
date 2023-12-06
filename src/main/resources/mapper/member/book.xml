@@ -61,6 +61,13 @@
 
     </insert>
 
+    <select id="getDetailBookYn" parameterType="BookVo">
+        SELECT
+            COUNT(*)
+        FROM  USER_BOOK_D
+        WHERE ISBN13 = #{isbn13}
+    </select>
+
     <select id="getUserStatus" resultType="BookVo">
         SELECT
             UB.ISBN13,
@@ -84,4 +91,16 @@
           AND UB.USER_ID = #{userId}
     </select>
 
+    <delete id="deleteBook" parameterType="BookVo">
+        DELETE
+         FROM USER_BOOK
+        WHERE ISBN13 = #{isbn13}
+          AND USER_ID = #{userId}
+    </delete>
+
+    <delete id="deleteBookDetail" parameterType="BookVo">
+        DELETE
+         FROM USER_BOOK_D
+        WHERE ISBN13 = #{isbn13}
+    </delete>
 </mapper>

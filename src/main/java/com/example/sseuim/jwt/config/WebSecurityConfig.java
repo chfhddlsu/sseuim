@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                         .accessDeniedHandler( new JwtAccessDeniedHandler())
                 )
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/auth/login", "/auth/join", "/book/saveBook").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/auth/login", "/auth/join", "/book/**").permitAll().anyRequest().authenticated())
                 .apply(new SecurityConfig(tokenProvider));
 
         return http.build();

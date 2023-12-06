@@ -1,4 +1,4 @@
-import {Dispatch, ReactChildren, ReactNode, SetStateAction, useEffect, useState} from 'react';
+import { useEffect, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import styled from 'styled-components';
 import Form from 'react-bootstrap/Form';
@@ -7,10 +7,12 @@ import { FaTrash } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../stores/store";
-import {saveBook} from "../stores/book/bookSlice";
+import {deleteBook, saveBook} from "../stores/book/bookSlice";
 import React from 'react';
 import axios from "axios";
 import {BookDetail} from "../types/basic";
+import {ToastContainer} from "react-toastify";
+
 
 type Modal ={
     show : boolean
@@ -42,10 +44,10 @@ function StatusModal({show, setShow, bookId} : Modal) {
         { value : 'STOP',       text : '멈춤 🚫'},
     ]
     const [status , setStatus] = useState<string>(bookDetail.status);
+    const {isSuccess}  = useSelector((state:RootState) => state.book);
     const handleClose = () => setShow(false);
     const dispatch = useDispatch<AppDispatch>();
     const [book , setBook] = useState<BookDetail>(bookInit);
-
     const getBookDate = async ()=>{
         const URL = process.env.REACT_APP_ITEM_KEY
 
@@ -59,22 +61,31 @@ function StatusModal({show, setShow, bookId} : Modal) {
     }
 
     useEffect(()=>{
-        getBookDate();
-    },[])
 
-    function OnClickStatus (idx :number, val :string)  {
+        getBookDate();
+        fn_setCheck(bookDetail.status);
+
+    },[bookDetail.status])
+
+    function fn_setCheck(value:string){
 
         let copy = [...check];
 
-        copy[idx] = !copy[idx]
-
         for(let i=0; i<statusList.length; i++){
-            if(i != idx){
+
+            if(value == statusList[i].value){
+                copy[i] = true
+            }else{
                 copy[i] = false
             }
         }
 
         setCheck(copy);
+    }
+
+    function OnClickStatus (idx :number, val :string)  {
+
+        fn_setCheck(val);
 
 
         book.status = val;
@@ -82,9 +93,12 @@ function StatusModal({show, setShow, bookId} : Modal) {
         setBook(book)
 
         dispatch(saveBook(book));
+
     }
 
     function OnClickDelete(){
+
+        dispatch(deleteBook(bookDetail));
 
     }
 
@@ -120,7 +134,9 @@ function StatusModal({show, setShow, bookId} : Modal) {
                 </Button>
                 <Button variant="secondary" onClick={handleClose}>Close</Button>
             </Modal.Footer>
+            <ToastContainer/>
         </Modal>
+
     );
 }
 

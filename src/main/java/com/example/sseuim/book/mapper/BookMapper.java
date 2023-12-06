@@ -11,4 +11,10 @@ public interface BookMapper {
     int saveBookDetail(BookVo vo);
 
     BookVo  getUserStatus(BookVo vo);
+
+    int deleteBook(BookVo vo);
+
+    int deleteBookDetail(BookVo vo);
+
+    int getDetailBookYn(BookVo vo);
 }

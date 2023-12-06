@@ -36,7 +36,7 @@ public class BookServiceImpl implements BookService{
      */
     @Override
     @Transactional
-    public BookVo saveBook(BookVo vo , String token) {
+    public int saveBook(BookVo vo , String token) {
 
         String email = common.getEmailByToken(token);
         Member member = memberService.findMemberByEmail(email);
@@ -46,13 +46,15 @@ public class BookServiceImpl implements BookService{
         vo.setUserId(member.getId());
 
        result += bookMapper.saveMyBook(vo);      // 사용자 상태 저장
-       result += bookMapper.saveBookDetail(vo);  // 책 상세 정보 저장
 
-       if(result > 0){
-           response = getUserStatus(vo);
-       }
+        int inserDetail = 0;
+        inserDetail = bookMapper.getDetailBookYn(vo);
+        if(inserDetail == 0){
+            result += bookMapper.saveBookDetail(vo);  // 책 상세 정보 저장
+        }
 
-       return response;
+
+       return result;
     }
 
 
@@ -60,13 +62,36 @@ public class BookServiceImpl implements BookService{
     /**
      *  사용자의 도서 상태를 조회
      *
-     * @param : String token, String userId
+     * @param :  BookVo vo
      * @return :  BookVo vo
      */
+    @Override
     public BookVo getUserStatus(BookVo vo){
 
         vo = bookMapper.getUserStatus(vo);
 
         return vo;
+    }
+
+
+    /**
+     *  사용자의 도서 상태 정보 삭제
+     *
+     * @param : BookVo vo
+     * @return :  int result
+     */
+    @Override
+    @Transactional
+    public int deleteBook(BookVo vo, String token){
+        String email = common.getEmailByToken(token);
+        Member member = memberService.findMemberByEmail(email);
+        vo.setUserId(member.getId());
+
+        int result = 0;
+
+        result += bookMapper.deleteBook(vo);
+        result += bookMapper.deleteBookDetail(vo);
+
+        return result;
     }
 }

@@ -3,12 +3,11 @@ package com.example.sseuim.book.controller;
 import com.example.sseuim.book.domain.BookVo;
 import com.example.sseuim.book.service.BookServiceImpl;
 import com.example.sseuim.common.Common;
+import com.example.sseuim.member.domain.Member;
+import com.example.sseuim.member.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -18,16 +17,42 @@ public class BookController {
     private final BookServiceImpl service;
     private final Common common;
 
-    BookController(BookServiceImpl service, Common common){
+    private final MemberServiceImpl memberService;
+
+    BookController(BookServiceImpl service, Common common, MemberServiceImpl memberService){
         this.service = service;
         this.common = common;
+        this.memberService = memberService;
+
     }
     @PostMapping("/saveBook")
-    public BookVo saveBook(@RequestBody BookVo vo, HttpServletRequest request){
+    public int saveBook(@RequestBody BookVo vo, HttpServletRequest request){
 
         String token = common.getToken(request);
 
         return service.saveBook(vo, token);
+
+    }
+
+    @PostMapping("/deleteBook")
+    public int deleteBook(@RequestBody BookVo vo, HttpServletRequest request){
+
+        String token = common.getToken(request);
+
+
+        return service.deleteBook(vo, token);
+
+    }
+
+    @PostMapping("/getBookStatus")
+    public BookVo getBook(@RequestBody BookVo vo, HttpServletRequest request){
+        String token = common.getToken(request);
+        String email = common.getEmailByToken(token);
+        Member member = memberService.findMemberByEmail(email);
+        vo.setUserId(member.getId());
+
+
+        return service.getUserStatus(vo);
 
     }
 
