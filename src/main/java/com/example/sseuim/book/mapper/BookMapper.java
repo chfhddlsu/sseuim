@@ -17,4 +17,6 @@ public interface BookMapper {
     int deleteBookDetail(BookVo vo);
 
     int getDetailBookYn(BookVo vo);
+
+    int saveScore(BookVo vo);
 }

@@ -13,10 +13,10 @@ type Type = {
 }
 
 function BookRecord(bookId :Type) :JSX.Element{
-    const bookDetail= useSelector((state :RootState)=> state.book.bookDetail)
+    const bookInfo= useSelector((state :RootState)=> state.book.bookResponse)
     const [show, setShow] = useState(false);
-    const [star, setStar] = useState<number>(bookDetail.score);
-    const [status, setStatus] = useState<string>(bookDetail.status);
+    const [star, setStar] = useState<number>(bookInfo.score);
+    const [status, setStatus] = useState<string>(bookInfo.status);
     const dispatch = useDispatch<AppDispatch>();
     const statusList = [
         { value : 'WISH',       text : '읽고싶은 📘'},
@@ -30,19 +30,19 @@ function BookRecord(bookId :Type) :JSX.Element{
     }
 
     useEffect(()=>{
-        init();
+        dispatch(init());
         getUserBook();
-    },[dispatch,status,show])
+    },[status,star,show])
 
     return (
         <Layout>
             <BookStateBox>
                 <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 상태</label>
                 <AddBtn onClick={()=>{setShow(true)}}>
-                    {bookDetail.status === "" ? "➕ 책 추가" :
+                    {bookInfo.status === undefined ? "➕ 책 추가" :
                         statusList.map((val, idx)=>{
                             return (
-                                bookDetail.status === val.value ? val.text : ""
+                                bookInfo.status === val.value ? val.text : ""
                             )
                         })
                     }
@@ -50,21 +50,29 @@ function BookRecord(bookId :Type) :JSX.Element{
                 <StatusModal show={show} setShow={setShow} bookId={bookId.bookId} ></StatusModal>
             </BookStateBox>
 
-            <BookStateBox >
-                <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>별점</label>
-                <StarRating star={star} setStar={setStar}></StarRating>
-            </BookStateBox>
+            {
+                bookInfo.status === undefined ? null :
 
-            <BookStateBox>
-                <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 메모</label>
-                <IconBox>
-                    <li>
-                        <Memo/>
-                        <div className='IconSpan'>0</div>
-                    </li>
+                    <BookStateBox >
+                        <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>별점</label>
+                        <StarRating star={bookInfo.score} setStar={setStar}></StarRating>
+                    </BookStateBox>
+            }
 
-                </IconBox>
-            </BookStateBox>
+            {
+                bookInfo.status === undefined ? null :
+
+                    <BookStateBox>
+                        <label htmlFor='bookStatus'  style={{fontSize: '20px'}}>내 메모</label>
+                        <IconBox>
+                            <li>
+                                <Memo/>
+                                <div className='IconSpan'>0</div>
+                            </li>
+
+                        </IconBox>
+                    </BookStateBox>
+            }
 
         </Layout>
     )

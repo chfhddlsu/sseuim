@@ -8,4 +8,6 @@ public interface BookService {
     public BookVo getUserStatus(BookVo vo);
 
     public int  deleteBook(BookVo vo, String token);
+
+    public int saveScore(BookVo vo, String token);
 }

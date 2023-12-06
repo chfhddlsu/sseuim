@@ -1,4 +1,4 @@
-import {BookDetail, Books} from "../../types/basic";
+import {BookDetail, Books, ResponseBookInfo} from "../../types/basic";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../store";
 import axios from "axios";
@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export interface bookReducer {
     book      : Books
-    bookDetail : BookDetail;
+    bookResponse : ResponseBookInfo;
     isError   : boolean;
     isSuccess : boolean;
     isLoading : boolean;
@@ -23,7 +23,7 @@ const initialState : bookReducer = {
         publisher : '',
     },
 
-    bookDetail : {
+    bookResponse : {
         title          : '',
         author         : '',
         cover          : '',
@@ -46,7 +46,7 @@ const initialState : bookReducer = {
 }
 
 
-export const getBookDetail = createAsyncThunk<BookDetail,string, {rejectValue : string}>(
+export const getBookDetail = createAsyncThunk<ResponseBookInfo,string, {rejectValue : string}>(
     'book/getBookStatus',
     async (bookId, thunkAPI) => {
         try{
@@ -70,9 +70,9 @@ export const getBookDetail = createAsyncThunk<BookDetail,string, {rejectValue : 
     }
 );
 
-export const saveBook = createAsyncThunk<BookDetail, BookDetail>(
+export const saveBook = createAsyncThunk<ResponseBookInfo, ResponseBookInfo>(
     'book/saveBook',
-    async (book :BookDetail, thunkAPI) => {
+    async (book :ResponseBookInfo, thunkAPI) => {
         try{
             const state = thunkAPI.getState() as RootState
             const {token} = state.member;
@@ -97,7 +97,7 @@ export const saveBook = createAsyncThunk<BookDetail, BookDetail>(
 
 export const deleteBook = createAsyncThunk(
     'book/deleteBook',
-    async (book :BookDetail, thunkAPI) => {
+    async (book :ResponseBookInfo, thunkAPI) => {
         try{
             const state = thunkAPI.getState() as RootState
             const {token} = state.member;
@@ -139,7 +139,7 @@ export const bookSlice = createSlice({
                 state.isLoading = false;
                 state.isError = false;
                 state.isSuccess = true;
-                state.bookDetail = {...action.payload};
+                state.bookResponse = {...action.payload};
             })
             .addCase(getBookDetail.rejected, (state, action) => {
                 state.isLoading = false;

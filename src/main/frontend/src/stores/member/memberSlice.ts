@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 export interface memberReducer {
     member    : Member;
-    token     : string
+    token     : string;
     isLogin   : boolean;
     isError   : boolean;
     isSuccess : boolean;

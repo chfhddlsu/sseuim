@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import { BsStarFill } from 'react-icons/bs';
 import { Dispatch, SetStateAction } from 'react';
-
+import axios from "axios";
+import { useSelector } from 'react-redux';
+import {RootState} from "../stores/store";
 
 interface StarRatingProps {
     star: number;
@@ -27,15 +29,34 @@ const Star = styled(BsStarFill)`
 
 
 const StarRating = ({star, setStar} : StarRatingProps) => {
+    const bookInfo= useSelector((state :RootState)=> state.book.bookResponse)
     const starArr = [1, 2, 3, 4, 5];
+    const {token} =  useSelector((state: RootState) => state.member);
 
+    async function saveScore( score:number ){
+        setStar(score);
+
+        await axios({
+            method : 'post',
+            url : '/book/saveScore',
+            data : {score : score, isbn13 : bookInfo.isbn13},
+            headers : {  Authorization : token}
+            },
+        ).then((res)=>{
+            console.log(res.data)
+        }).catch((e)=>{
+            console.log(e.message());
+        })
+    }
     return (
         <Wrapper>
             {starArr.map((score, index) => (
                 <Star
                     key={index}
                     className={score <= star ? 'active' : 'inactive'}
-                    onClick={() => setStar(score)}
+                    onClick={()=>{
+                        saveScore(score)
+                    }}
                 />
             ))}
         </Wrapper>

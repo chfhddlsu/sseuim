@@ -19,12 +19,10 @@ function SearchBook() :JSX.Element{
         pubDate        : '',
         description    : '',
         isbn13         : '',  // bookId
-        price_standard : 0,
-        category_name  : '',
+        priceStandard  : 0,
+        categoryName   : '',
         publisher      : '',
         itemPage       : '',
-        status         : '',
-        score          : 0,
     };
 
 
@@ -85,7 +83,7 @@ function SearchBook() :JSX.Element{
 
 function BookInfo(props : {info :BookDetail} ) : JSX.Element {
 
-   const {author, publisher, category_name, pubDate, price_standard, description} = props.info
+   const {author, publisher, categoryName, pubDate, priceStandard, description} = props.info
 
     return (
         <>
@@ -93,9 +91,9 @@ function BookInfo(props : {info :BookDetail} ) : JSX.Element {
                 <span style={{fontSize: '25px'}}> 기본정보 </span>
                 <span>저자     : {author} </span>
                 <span>출판사   : {publisher} </span>
-                <span>카테고리 : {category_name} </span>
+                <span>카테고리 : {categoryName} </span>
                 <span>출간일   : {pubDate} </span>
-                <span>정가     : {price_standard} </span>
+                <span>정가     : {priceStandard} </span>
                 <span>도서정보 : 알라딘 제공 </span>
                 <span style={{fontSize: '25px'}} > 책설명 </span>
                 <span> {description} </span>

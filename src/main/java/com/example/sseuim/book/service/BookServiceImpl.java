@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Service
 @Transactional
@@ -40,23 +41,29 @@ public class BookServiceImpl implements BookService{
 
         String email = common.getEmailByToken(token);
         Member member = memberService.findMemberByEmail(email);
-        BookVo response = new BookVo();
+        LocalDate today = LocalDate.now();
         int result = 0;
 
         vo.setUserId(member.getId());
 
+        if(vo.getStatus().equals("READING")){
+            vo.setStartDate(String.valueOf(today));
+        }
+        if(vo.getStatus().equals("DONE")){
+            vo.setEndDate(String.valueOf(today));
+        }
+
        result += bookMapper.saveMyBook(vo);      // 사용자 상태 저장
 
-        int inserDetail = 0;
-        inserDetail = bookMapper.getDetailBookYn(vo);
-        if(inserDetail == 0){
-            result += bookMapper.saveBookDetail(vo);  // 책 상세 정보 저장
+        int newIs = 0;
+        newIs = bookMapper.getDetailBookYn(vo);
+        if(newIs == 0){
+            bookMapper.saveBookDetail(vo);  // 책 상세 정보 저장
         }
 
 
        return result;
     }
-
 
 
     /**
@@ -89,8 +96,30 @@ public class BookServiceImpl implements BookService{
 
         int result = 0;
 
-        result += bookMapper.deleteBook(vo);
         result += bookMapper.deleteBookDetail(vo);
+        result += bookMapper.deleteBook(vo);
+
+
+        return result;
+    }
+
+
+    /**
+     *  사용자 도서 별점 저장
+     *
+     * @param : BookVo vo
+     * @return :  int result
+     */
+    @Override
+    @Transactional
+    public int saveScore(BookVo vo, String token){
+        String email = common.getEmailByToken(token);
+        Member member = memberService.findMemberByEmail(email);
+        vo.setUserId(member.getId());
+
+        int result = 0;
+
+        result = bookMapper.saveScore(vo);
 
         return result;
     }

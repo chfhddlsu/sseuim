@@ -103,4 +103,15 @@
          FROM USER_BOOK_D
         WHERE ISBN13 = #{isbn13}
     </delete>
+
+    <update id="saveScore" parameterType="BookVo">
+        UPDATE
+            USER_BOOK
+        SET
+            SCORE = #{score}
+        WHERE
+            ISBN13 = #{isbn13}
+        AND
+            USER_ID = #{userId}
+    </update>
 </mapper>

@@ -10,7 +10,7 @@ import {AppDispatch, RootState} from "../stores/store";
 import {deleteBook, saveBook} from "../stores/book/bookSlice";
 import React from 'react';
 import axios from "axios";
-import {BookDetail} from "../types/basic";
+import {BookDetail, ResponseBookInfo} from "../types/basic";
 import {ToastContainer} from "react-toastify";
 
 
@@ -35,7 +35,7 @@ function StatusModal({show, setShow, bookId} : Modal) {
         score         : 0,
     };
 
-    const bookDetail= useSelector((state :RootState)=> state.book.bookDetail)
+    const bookInfo= useSelector((state :RootState)=> state.book.bookResponse)
     const [check, setCheck] = useState ([false, false, false, false])
     const statusList = [
         { value : 'WISH',       text : '읽고싶은 📘'},
@@ -43,11 +43,10 @@ function StatusModal({show, setShow, bookId} : Modal) {
         { value : 'DONE',       text : '다 읽은 📕'},
         { value : 'STOP',       text : '멈춤 🚫'},
     ]
-    const [status , setStatus] = useState<string>(bookDetail.status);
     const {isSuccess}  = useSelector((state:RootState) => state.book);
     const handleClose = () => setShow(false);
     const dispatch = useDispatch<AppDispatch>();
-    const [book , setBook] = useState<BookDetail>(bookInit);
+    const [book , setBook] = useState<ResponseBookInfo>(bookInit);
     const getBookDate = async ()=>{
         const URL = process.env.REACT_APP_ITEM_KEY
 
@@ -63,9 +62,9 @@ function StatusModal({show, setShow, bookId} : Modal) {
     useEffect(()=>{
 
         getBookDate();
-        fn_setCheck(bookDetail.status);
+        fn_setCheck(bookInfo.status);
 
-    },[bookDetail.status])
+    },[bookInfo.status])
 
     function fn_setCheck(value:string){
 
@@ -98,7 +97,7 @@ function StatusModal({show, setShow, bookId} : Modal) {
 
     function OnClickDelete(){
 
-        dispatch(deleteBook(bookDetail));
+        dispatch(deleteBook(bookInfo));
 
     }
 
