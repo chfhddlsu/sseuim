@@ -47,6 +47,8 @@ export interface ResponseBookInfo {
     memo?         : Memo[],
     memoCount?    : number
 }
+
+
 export interface Memo {
     memoId  : number;
     content : string;

@@ -3,6 +3,10 @@ package com.example.sseuim.book.mapper;
 import com.example.sseuim.book.domain.BookVo;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 @Mapper
 public interface BookMapper {
 
@@ -19,4 +23,6 @@ public interface BookMapper {
     int getDetailBookYn(BookVo vo);
 
     int saveScore(BookVo vo);
+
+   ArrayList<BookVo> getReadingBook(Long userId);
 }

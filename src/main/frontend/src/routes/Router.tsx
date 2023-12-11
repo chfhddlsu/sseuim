@@ -4,6 +4,7 @@ import Join from '../pages/Join'
 import Library from '../pages/Library'
 import SearchBooks from "../pages/SearchBooks";
 import SearchBook from "../pages/SearchBook";
+import Main from "../pages/Main"
 function Router () {
 
     return (
@@ -13,7 +14,7 @@ function Router () {
             <Route path='/library'    element={ <Library/>    } />
             <Route path='/search'     element={ <SearchBooks/> } />
             <Route path='/detail'     element={ <SearchBook/> } />
-
+            <Route path='/main'       element={ <Main/>       } />
         </Routes>
     )
 }

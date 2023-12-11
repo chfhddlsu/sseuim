@@ -17,14 +17,14 @@ function Login (){
     useEffect(() => {
 
         if (isLogin) {
-            navigate('/library');
+            navigate('/main');
         }
 
         if (isError) {
             dispatch(init());
         }
 
-    }, [isError, isLogin, dispatch, navigate]);
+    }, [isError, isLogin]);
 
     const {
         register,

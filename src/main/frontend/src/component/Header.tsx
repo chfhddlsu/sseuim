@@ -62,11 +62,21 @@ function Header () {
 
 
         <HeaderWrapper>
-            <Link to='/'>
-               <Logo>
-                   <img src={logo} alt='logo_icon'/>
-               </Logo>
-            </Link>
+            {
+                isLogin === true ?
+                    <Link to='/main'>
+                        <Logo>
+                            <img src={logo} alt='logo_icon'/>
+                        </Logo>
+                    </Link>
+                    :
+                    <Link to='/'>
+                        <Logo>
+                            <img src={logo} alt='logo_icon'/>
+                        </Logo>
+                    </Link>
+            }
+
 
             {
                 isLogin === true ?

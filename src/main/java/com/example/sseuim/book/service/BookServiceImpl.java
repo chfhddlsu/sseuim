@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 @Transactional
@@ -122,5 +125,20 @@ public class BookServiceImpl implements BookService{
         result = bookMapper.saveScore(vo);
 
         return result;
+    }
+
+    /**
+     *  읽고있는 책 조회
+     *
+     * @param : String token
+     * @return :  BookVo Bookvo
+     */
+    @Override
+    public ArrayList<BookVo> getReadingBook(String token){
+        String email = common.getEmailByToken(token);
+        Member member = memberService.findMemberByEmail(email);
+        ArrayList<BookVo> book =  bookMapper.getReadingBook(member.getId());
+        return book;
+
     }
 }

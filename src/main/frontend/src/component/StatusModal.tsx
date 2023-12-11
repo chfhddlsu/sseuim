@@ -55,7 +55,7 @@ function StatusModal({show, setShow, bookId} : Modal) {
 
             setBook(data.item[0]);
         }catch (e :any){
-            console.log(e.message());
+            console.log(e);
         }
     }
 

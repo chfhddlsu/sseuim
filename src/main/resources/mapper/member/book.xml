@@ -68,7 +68,7 @@
         WHERE ISBN13 = #{isbn13}
     </select>
 
-    <select id="getUserStatus" resultType="BookVo">
+    <select id="getUserStatus" parameterType="BookVo" resultType="hashMap">
         SELECT
             UB.ISBN13,
             UB.STATUS,
@@ -87,7 +87,10 @@
         FROM  USER_BOOK UB
         INNER JOIN USER_BOOK_D UBD
         ON UB.ISBN13 = UBD.ISBN13
-        WHERE UB.ISBN13 = #{isbn13}
+        WHERE 1=1
+          <if test='isbn13 != null and isbn != ""'>
+              AND UB.ISBN13 = #{isbn13}
+          </if>
           AND UB.USER_ID = #{userId}
     </select>
 
@@ -114,4 +117,18 @@
         AND
             USER_ID = #{userId}
     </update>
+
+    <select id="getReadingBook" resultType="hashMap">
+        SELECT
+        UB.ISBN13,  as isbn13
+        UBD.TITLE,
+        UBD.AUTHOR,
+        UBD.COVER   as cover
+        FROM  USER_BOOK UB
+        INNER JOIN USER_BOOK_D UBD
+        ON UB.ISBN13 = UBD.ISBN13
+        WHERE 1=1
+        AND UB.USER_ID = #{userId}
+    </select>
+
 </mapper>

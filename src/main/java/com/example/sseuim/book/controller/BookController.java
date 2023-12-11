@@ -9,6 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/book")
@@ -62,6 +66,13 @@ public class BookController {
 
         return service.saveScore(vo, token);
 
+    }
+
+    @GetMapping("/getReadingBook")
+    public  ArrayList<BookVo>  getReadingBook(HttpServletRequest request){
+        String token = common.getToken(request);
+
+        return   service.getReadingBook(token);
     }
 
 }

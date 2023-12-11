@@ -36,13 +36,13 @@ function SearchBook() :JSX.Element{
 
     const getBook = async () => {
         const URL = process.env.REACT_APP_ITEM_KEY
-
+        console.log("getBook", state.bookId);
         try{
             const {data} = await  axios.get(URL + state.bookId);
 
             setBook(data.item[0]);
         }catch (e :any){
-            console.log(e.message());
+            console.log(e);
         }
 
     }
