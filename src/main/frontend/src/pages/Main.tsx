@@ -24,7 +24,7 @@ function Main(){
                 }
             }
             );
-            console.log("myBook", data);
+
             copy = data;
             setMyBook(copy);
         }catch (error) {
@@ -70,7 +70,7 @@ function Main(){
             {
                 myBook.map((item,idx)=>{
                     return(
-                        <BookContent>
+                        <BookContent  key={idx}>
                         <BookCover src={item.cover} width=""/>
                         </BookContent>
                     )
@@ -88,6 +88,7 @@ function Main(){
                         <ul>
                             <span>{idx +1}</span>
                             <BookContent
+                                key={idx}
                                 onClick={()=>{navigate('/detail', {state : {bookId : item.isbn13}})}}
                             >
                                 <BookCover src={item.cover} width=""/>
@@ -123,10 +124,7 @@ const Layout = styled.div`
     margin-left: 1rem;
     margin-top: 1rem;
   }
-  /*  .slick-slide {
-      border: 20px solid #e8e7dd;
-      box-sizing: border-box;
-    }*/
+  
   
 `
 

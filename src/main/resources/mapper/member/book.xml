@@ -4,6 +4,22 @@
 
 <mapper namespace="com.example.sseuim.book.mapper.BookMapper">
 
+    <resultMap id="mapping_bookList" type="BookVo">
+        <result property="isbn13" column="ISBN13"/>
+        <result property="title" column="TITLE"/>
+        <result property="author" column="AUTHOR"/>
+        <result property="cover" column="COVER"/>
+        <result property="pubDate" column="PUB_DATE"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="priceStandard" column="PRICE_STANDARD"/>
+        <result property="categoryName" column="CATEGORY_NAME"/>
+        <result property="publisher" column="PUBLISHER"/>
+        <result property="itemPage" column="ITEM_PAGE"/>
+        <result property="status" column="STATUS"/>
+        <result property="score" column="SCORE"/>
+        <result property="startDate" column="START_DATE"/>
+        <result property="endDate" column="END_DATE"/>
+    </resultMap>
     <insert id="saveMyBook" parameterType="BookVo">
         INSERT
             INTO USER_BOOK (
@@ -68,7 +84,7 @@
         WHERE ISBN13 = #{isbn13}
     </select>
 
-    <select id="getUserStatus" parameterType="BookVo" resultType="hashMap">
+    <select id="getUserStatus" resultMap="mapping_bookList">
         SELECT
             UB.ISBN13,
             UB.STATUS,
@@ -88,9 +104,7 @@
         INNER JOIN USER_BOOK_D UBD
         ON UB.ISBN13 = UBD.ISBN13
         WHERE 1=1
-          <if test='isbn13 != null and isbn != ""'>
-              AND UB.ISBN13 = #{isbn13}
-          </if>
+          AND UB.ISBN13 = #{isbn13}
           AND UB.USER_ID = #{userId}
     </select>
 
@@ -118,17 +132,18 @@
             USER_ID = #{userId}
     </update>
 
-    <select id="getReadingBook" resultType="hashMap">
+    <select id="getReadingBook" resultType="BookVo">
         SELECT
-        UB.ISBN13,  as isbn13
-        UBD.TITLE,
-        UBD.AUTHOR,
-        UBD.COVER   as cover
+            UB.ISBN13,
+            UBD.TITLE,
+            UBD.AUTHOR,
+            UBD.COVER
         FROM  USER_BOOK UB
         INNER JOIN USER_BOOK_D UBD
         ON UB.ISBN13 = UBD.ISBN13
         WHERE 1=1
         AND UB.USER_ID = #{userId}
+        AND UB.STATUS = "READING"
     </select>
 
 </mapper>
