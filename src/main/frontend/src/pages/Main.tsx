@@ -70,7 +70,10 @@ function Main(){
             {
                 myBook.map((item,idx)=>{
                     return(
-                        <BookContent  key={idx}>
+                        <BookContent
+                            key={idx}
+                            onClick={()=>{navigate('/detail', {state : {bookId : item.isbn13}})}}
+                        >
                         <BookCover src={item.cover} width=""/>
                         </BookContent>
                     )
