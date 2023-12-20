@@ -146,4 +146,17 @@
         AND UB.STATUS = "READING"
     </select>
 
+    <select id="getMyLiabrary" resultType="BookVo">
+        SELECT
+            COUNT(M.MEMO_ID) AS memoCount,
+            COUNT(UB.ISBN13) AS bookCount,
+            UB.USER_ID
+        FROM  USER_BOOK UB
+        LEFT JOIN MEMO M
+            ON UB.ISBN13 = M.ISBN13
+        WHERE 1=1
+          AND UB.USER_ID =  #{userId}
+        GROUP BY M.USER_ID
+    </select>
+
 </mapper>

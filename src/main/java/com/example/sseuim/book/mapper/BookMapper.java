@@ -25,4 +25,6 @@ public interface BookMapper {
     int saveScore(BookVo vo);
 
    ArrayList<BookVo> getReadingBook(Long userId);
+
+   BookVo getMyLiabrary(BookVo vo);
 }

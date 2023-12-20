@@ -139,4 +139,19 @@ public class BookServiceImpl implements BookService{
         return book;
 
     }
+
+    /**
+     *  내서재 정보 조회
+     *
+     * @param : BookVo vo, String token
+     * @return :  BookVo Bookvo
+     */
+    @Override
+    public BookVo getMyLibrary(BookVo vo, String token){
+        String email = common.getEmailByToken(token);
+        Member member = memberService.findMemberByEmail(email);
+        vo.setUserId(member.getId());
+
+        return bookMapper.getMyLiabrary(vo);
+    }
 }

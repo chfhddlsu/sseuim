@@ -16,4 +16,6 @@ public interface BookService {
     public int saveScore(BookVo vo, String token);
 
     public ArrayList<BookVo> getReadingBook(String token);
+
+    public BookVo getMyLibrary(BookVo vo, String token);
 }

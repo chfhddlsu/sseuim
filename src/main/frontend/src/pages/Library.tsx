@@ -1,5 +1,5 @@
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styled from 'styled-components';
 import { FaBook } from "react-icons/fa6";
 import { CiMemoPad } from "react-icons/ci";
@@ -9,13 +9,73 @@ import {useSelector} from "react-redux";
 import {RootState} from "../stores/store";
 import {Books} from "../types/basic";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import bookRecord from "./BookRecord";
+
+type Record = {
+    bookCount : number,
+    memoCount : number
+}
+
 
 function  Library ():React.ReactElement {
 
     const { token } = useSelector((state: RootState) => state.member);
     const [myBook, setMyBook] = useState<Books[]>([]);
+    const [myRecord, setMyRecord] = useState<Record[]>([{bookCount :0, memoCount:0}]);
     const navigate = useNavigate();
-    
+
+    async function ReadingBook(){
+        let copy = [...myBook];
+        try{
+
+            const {data} = await  axios.get('/book/getReadingBook',
+                {
+                    headers : {
+                        Authorization: token,
+                    }
+                }
+            );
+
+            copy = data;
+            setMyBook(copy);
+        }catch (error) {
+            if(axios.isAxiosError(error)){
+                console.log('error : ' , error.message);
+            }else{
+                console.log('unexpect error :' , error);
+            }
+        }
+    }
+
+    async function MyRecordInfo(){
+        let copy = [...myRecord];
+        try{
+
+            const {data} = await  axios.post('/book/getMyRecord',
+                {
+                    headers : {
+                        Authorization: token,
+                    }
+                }
+            );
+            console.log("count", data);
+            copy = data;
+            setMyRecord(copy);
+        }catch (error) {
+            if(axios.isAxiosError(error)){
+                console.log('error : ' , error.message);
+            }else{
+                console.log('unexpect error :' , error);
+            }
+        }
+    }
+
+    useEffect(()=>{
+        ReadingBook();
+        MyRecordInfo()
+    },[])
+
     return (
             <Layout>
                 <Card>
@@ -23,31 +83,39 @@ function  Library ():React.ReactElement {
                     <Container>
                         <li>
                             <FaBook size='1.5rem' />
-                            <div>책[0]</div>
+                            <div>책[{myRecord[0].bookCount}]</div>
                         </li>
                         <li>
                             <CiMemoPad size='1.5rem' />
-                            <div>메모[0]</div>
+                            <div>메모[{myRecord[0].memoCount}]</div>
                         </li>
                     </Container>
                 </Card>
 
                 <Card>
                     <span>읽고 있는 책</span>
-                    <BookSlide>
-                        {
-                            myBook.map((item,idx)=>{
-                                return(
-                                    <Container
-                                        key={idx}
-                                        onClick={()=>{navigate('/detail', {state : {bookId : item.isbn13}})}}
-                                    >
-                                        <BookCover src={item.cover} width=""/>
-                                    </Container>
-                                )
-                            })
-                        }
-                    </BookSlide>
+                    {
+                        myBook.length == 0 ?
+                            <Sign
+                                onClick={()=>{navigate('/search')}}
+                            >
+                            등록 된 읽고 있는 책이 없어요. <br/> 읽고 있는 책을 등록해 주세요.  🔍
+                            </Sign> :
+                        <BookSlide>
+                            {
+                                myBook.map((item,idx)=>{
+                                    return(
+                                        <Container
+                                            key={idx}
+                                            onClick={()=>{navigate('/detail', {state : {bookId : item.isbn13}})}}
+                                        >
+                                            <BookCover src={item.cover} width=""/>
+                                        </Container>
+                                    )
+                                })
+                            }
+                         </BookSlide>
+                    }
                 </Card>
 
                 <Card>
@@ -95,7 +163,14 @@ const Container  = styled.ul`
   }
 `
 
-
+const Sign = styled.div`
+  width: 50%;
+  margin: 2rem 2rem 2rem 2rem;
+  cursor: pointer;
+  font-size : 30px;
+  color: #6c757d;
+  white-space: pre-line;
+`
 
 
 export default Library;

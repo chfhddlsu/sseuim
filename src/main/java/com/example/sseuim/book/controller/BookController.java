@@ -75,4 +75,13 @@ public class BookController {
         return   service.getReadingBook(token);
     }
 
+    @PostMapping("/getMyRecord")
+    public BookVo getMyLibrary(@RequestBody BookVo vo, HttpServletRequest request){
+        String token = common.getToken(request);
+
+        return service.getMyLibrary(vo, token);
+
+    }
+
+
 }

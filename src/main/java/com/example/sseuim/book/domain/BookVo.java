@@ -19,4 +19,6 @@ public class BookVo {
     private String score;
     private String startDate;
     private String endDate;
+    private int memoCount;
+    private int bookCount;
 }
